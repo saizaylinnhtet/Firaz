@@ -1,15 +1,21 @@
 import { Router } from "express";
 import { AuthController } from "../controllers/auth.controller.js";
+import { AuthService } from "../services/auth.service.js";
+import { AuthRepository } from "../repositories/auth.repository.js";
 
 
 export class AuthRoutes {
 
-    public router: Router
-    private authController: AuthController
+    public readonly router: Router
+    private readonly authController: AuthController
+    private readonly authService: AuthService
+    private readonly authRepository: AuthRepository
 
     constructor() {
         this.router = Router()
-        this.authController = new AuthController()
+        this.authRepository = new AuthRepository()
+        this.authService = new AuthService(this.authRepository)
+        this.authController = new AuthController(this.authService)
         this.setupRoutes()
     }
 

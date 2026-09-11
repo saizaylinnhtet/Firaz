@@ -1,19 +1,20 @@
 import { type Request, type Response } from "express";
-import { signUpSchema } from "../schemas/auth.schema.js";
+import { signInSchema, signUpSchema } from "../schemas/auth.schema.js";
+import type { AuthService } from "../services/auth.service.js";
 
 
 export class AuthController {
-    signUp = (req: Request, res: Response): void => {
+    constructor(private readonly authService: AuthService) {}
+
+    signUp = async (req: Request, res: Response): Promise<void> => {
         const data = signUpSchema.parse(req.body)
-        console.log(data)
-        res.json({
-            'message': "Sign Up"
-        })
+        const result = await this.authService.signUp(data)
+        res.status(201).json(result);
     }
 
-    signIn = (req: Request, res: Response): void => {
-        res.json({
-            'message': "Sign In"
-        })
+    signIn = async (req: Request, res: Response): Promise<void> => {
+        const data = signInSchema.parse(req.body)
+        const result = await this.authService.signIn(data) 
+        res.status(200).json(result)
     }
 }
