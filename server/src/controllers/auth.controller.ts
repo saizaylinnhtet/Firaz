@@ -1,5 +1,5 @@
 import { type Request, type Response } from "express";
-import { signInSchema, signUpSchema } from "../schemas/auth.schema.js";
+import { signInSchema, signUpSchema, signUpVerifySchema } from "../schemas/auth.schema.js";
 import type { AuthService } from "../services/auth.service.js";
 
 
@@ -15,6 +15,12 @@ export class AuthController {
     signIn = async (req: Request, res: Response): Promise<void> => {
         const data = signInSchema.parse(req.body)
         const result = await this.authService.signIn(data) 
+        res.status(200).json(result)
+    }
+
+    signUpVerify = async (req: Request, res: Response): Promise<void> => {
+        const data = signUpVerifySchema.parse(req.body)
+        const result = await this.authService.signUpVerify(data)
         res.status(200).json(result)
     }
 }

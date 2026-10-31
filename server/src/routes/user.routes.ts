@@ -3,7 +3,7 @@ import { UserController } from "../controllers/user.controller.js"
 
 
 export class UserRoutes {
-    private router: Router
+    public router: Router
     private userController: UserController
     constructor(){
         this.router = Router()
@@ -15,7 +15,4 @@ export class UserRoutes {
         this.router.get('/', this.userController.getUser)
     }
 
-    getRouter(): Router {
-        return this.router
-    }
 }

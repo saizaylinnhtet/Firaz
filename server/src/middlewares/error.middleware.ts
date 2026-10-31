@@ -3,6 +3,7 @@ import { ZodError } from "zod";
 import { InvalidCredentialsError } from "../errors/invalid-credentials.error.js";
 import { Prisma } from "../../generated/prisma/client.js";
 import { ConflictError } from "../errors/conflict.error.js";
+import { NotFoundError } from "../errors/notfound.error.js";
 
 export const zodErrorMiddleware = (
   err: unknown,
@@ -45,6 +46,12 @@ export const errorMiddleware = (
           message: err.message,
       });
       return;
+  }
+  if (err instanceof NotFoundError) {
+    res.status(404).json({
+      message: err.message,
+    });
+    return;
   }
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     switch (err.code) {

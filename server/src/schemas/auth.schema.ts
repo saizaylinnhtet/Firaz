@@ -12,5 +12,11 @@ export const signInSchema = z.object({
     password: z.string()
 })
 
+export const signUpVerifySchema = z.object({
+    userId: z.number(),
+    otp: z.string().min(6).max(6)
+})
+
 export type SignUpInput = z.infer<typeof signUpSchema>
 export type SignInInput = z.infer<typeof signInSchema>
+export type SignUpVerifyInput = z.infer<typeof signUpVerifySchema>

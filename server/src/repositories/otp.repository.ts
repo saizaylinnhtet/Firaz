@@ -23,4 +23,13 @@ export class OtpRepository {
             }
         })
     }
+
+    async deleteOtp(id: string, tx?: TransactionClient) {
+        const db = tx ?? prisma
+        return db.otp.delete({
+            where: {
+                id
+            }
+        })
+    }
 }

@@ -1,6 +1,6 @@
 import type { TransactionClient } from "../../generated/prisma/internal/prismaNamespace.js";
 import prisma from "../lib/prisma.js";
-import type { CreateUserData } from "../types/user.types.js";
+import type { CreateUserData, UpdateUserData } from "../types/user.types.js";
 
 
 export class AuthRepository {
@@ -16,6 +16,16 @@ export class AuthRepository {
       where: {
         email,
       },
+    });
+  }
+
+  async updateUser(userId: number, data: UpdateUserData, tx?: TransactionClient) {
+    const db = tx ?? prisma;
+    return db.user.update({
+      where: {
+        id: userId,
+      },
+      data,
     });
   }
 }
