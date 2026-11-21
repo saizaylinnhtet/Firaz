@@ -4,6 +4,9 @@ import { InvalidCredentialsError } from "../errors/invalid-credentials.error.js"
 import { Prisma } from "../../generated/prisma/client.js";
 import { ConflictError } from "../errors/conflict.error.js";
 import { NotFoundError } from "../errors/notfound.error.js";
+import jwt from "jsonwebtoken";
+
+const { JsonWebTokenError, TokenExpiredError, NotBeforeError } = jwt;
 
 export const zodErrorMiddleware = (
   err: unknown,
@@ -27,6 +30,34 @@ export const zodErrorMiddleware = (
   next(err);
 };
 
+export const jwtErrorMiddleware = (
+  err: unknown,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): void => {
+  if (err instanceof JsonWebTokenError) {
+    res.status(401).json({
+      message: err.message,
+    });
+    return;
+  }
+  if (err instanceof TokenExpiredError) {
+    res.status(401).json({
+      message: "Access token expired",
+    });
+    return;
+  }
+
+  if (err instanceof JsonWebTokenError) {
+    res.status(401).json({
+      message: "Invalid access token",
+    });
+    return;
+  }
+  next(err);
+};
+
 export const errorMiddleware = (
   err: unknown,
   req: Request,
@@ -42,10 +73,10 @@ export const errorMiddleware = (
     return;
   }
   if (err instanceof ConflictError) {
-      res.status(409).json({
-          message: err.message,
-      });
-      return;
+    res.status(409).json({
+      message: err.message,
+    });
+    return;
   }
   if (err instanceof NotFoundError) {
     res.status(404).json({

@@ -21,6 +21,13 @@ export class AuthController {
     signUpVerify = async (req: Request, res: Response): Promise<void> => {
         const data = signUpVerifySchema.parse(req.body)
         const result = await this.authService.signUpVerify(data)
+        res.cookie("accessToken", result.accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 60 * 60 * 1000,
+            path: "/",
+        });
         res.status(200).json(result)
     }
 }
