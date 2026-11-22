@@ -1,0 +1,33 @@
+import { type Request, type Response } from "express";
+import { signInSchema, signUpSchema, signUpVerifySchema } from "@/modules/auth/validators/auth.schema.js";
+import type { AuthService } from "@/modules/auth/services/auth.service.js";
+
+
+export class AuthController {
+    constructor(private readonly authService: AuthService) {}
+
+    signUp = async (req: Request, res: Response): Promise<void> => {
+        const data = signUpSchema.parse(req.body)
+        const result = await this.authService.signUp(data)
+        res.status(201).json(result);
+    }
+
+    signIn = async (req: Request, res: Response): Promise<void> => {
+        const data = signInSchema.parse(req.body)
+        const result = await this.authService.signIn(data) 
+        res.status(200).json(result)
+    }
+
+    signUpVerify = async (req: Request, res: Response): Promise<void> => {
+        const data = signUpVerifySchema.parse(req.body)
+        const result = await this.authService.signUpVerify(data)
+        res.cookie("accessToken", result.accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 60 * 60 * 1000,
+            path: "/",
+        });
+        res.status(200).json(result)
+    }
+}

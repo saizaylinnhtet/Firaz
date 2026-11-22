@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "start": "node dist/server.js",
-    "build": "tsc"
+    "build": "tsc && tsc-alias"
   },
   "keywords": [],
   "author": "",
@@ -16,14 +16,16 @@
     "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^26.4.0",
+    "@types/node": "^26.6.6",
     "@types/pg": "^8.23.1",
+    "tsc-alias": "^1.9.10",
     "tsx": "^4.23.12",
     "typescript": "^7.0.2"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
+    "@types/cors": "^2.8.19",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
@@ -31,6 +33,7 @@
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.23.0",
     "prisma": "^7.10.0",
+    "resend": "^6.39.0",
     "zod": "^4.5.4"
   }
 }

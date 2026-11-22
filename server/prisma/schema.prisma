@@ -5,16 +5,37 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-model User { 
-  id    Int     @id @default(autoincrement()) 
-  email String  @unique
-  name  String
-  password String
-} 
+model User {
+  id              Int       @id @default(autoincrement())
+  email           String    @unique
+  name            String
+  password        String
+  otps            Otp[]
+  emailVerifiedAt DateTime?
+  isVerified      Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  lastModifiedAt  DateTime  @updatedAt
+}
+
+model Otp {
+  id                String   @id @default(uuid())
+  userId            Int
+  otpCode           String
+  otpExpirationTime DateTime
+  otpType           OtpType
+  createdAt         DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum OtpType {
+  SIGNUP
+  RESETPASSWORD
+}
