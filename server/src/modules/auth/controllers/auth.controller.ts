@@ -15,19 +15,24 @@ export class AuthController {
     signIn = async (req: Request, res: Response): Promise<void> => {
         const data = signInSchema.parse(req.body)
         const result = await this.authService.signIn(data) 
+        this.setCookie(res, result.accessToken)
         res.status(200).json(result)
     }
 
     signUpVerify = async (req: Request, res: Response): Promise<void> => {
         const data = signUpVerifySchema.parse(req.body)
         const result = await this.authService.signUpVerify(data)
-        res.cookie("accessToken", result.accessToken, {
+        this.setCookie(res, result.accessToken)
+        res.status(200).json(result)
+    }
+
+    private setCookie(res: Response, token: string) {
+        res.cookie("accessToken", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
             maxAge: 60 * 60 * 1000,
             path: "/",
         });
-        res.status(200).json(result)
     }
 }

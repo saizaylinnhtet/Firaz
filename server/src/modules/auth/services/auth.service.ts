@@ -72,11 +72,16 @@ export class AuthService {
 
     async signIn(data: SignInInput) {
         const existingUser = await this.authRepository.findByEmail(data.email)
-        if (!existingUser) throw new InvalidCredentialsError("Invalid email or password");
+        if (!existingUser || !existingUser.isVerified) throw new InvalidCredentialsError("Invalid email or password");
         const isCheckPassword = await checkCode(data.password, existingUser.password)
         if (!isCheckPassword) throw new InvalidCredentialsError("Invalid email or password")
         const { password, ...userWithoutPassword } = existingUser;
-        return { message: "success", userWithoutPassword}
+        const payload: JwtAccessTokenPayload = {
+            userId: userWithoutPassword.id,
+            isVerified: true,
+        }
+        const accessToken = this.jwtService.signAccessToken(payload)
+        return { message: "success", userWithoutPassword, accessToken}
     }
 
     async signUpVerify(data: SignUpVerifyInput) {
