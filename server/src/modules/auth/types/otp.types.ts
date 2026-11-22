@@ -1,4 +1,4 @@
-import type { OtpType } from "../../generated/prisma/client.js"
+import type { OtpType } from "@/generated/prisma/client.js"
 
 export type CreateOtpData = {
     userId: number,

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import type { StringValue } from "ms";
-import type { JwtAccessTokenPayload } from "../types/jwt.types.js";
+import type { JwtAccessTokenPayload } from "@/shared/types/jwt.types.js";
 
 
 export class JwtService {

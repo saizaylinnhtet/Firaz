@@ -1,6 +1,6 @@
-import type { TransactionClient } from "../../generated/prisma/internal/prismaNamespace.js"
-import prisma from "../lib/prisma.js"
-import type { CreateOtpData } from "../types/otp.types.js"
+import type { TransactionClient } from "@/generated/prisma/internal/prismaNamespace.js"
+import prisma from "@/infrastructure/database/prisma.js"
+import type { CreateOtpData } from "@/modules/auth/types/otp.types.js"
 
 
 

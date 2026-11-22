@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { AuthController } from "../controllers/auth.controller.js";
-import type { AuthService } from "../services/auth.service.js";
+import { AuthController } from "@/modules/auth/controllers/auth.controller.js";
+import type { AuthService } from "@/modules/auth/services/auth.service.js";
 
 export class AuthRoutes {
 

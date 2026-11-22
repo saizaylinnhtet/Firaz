@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { HealthController } from "../controllers/health.controller.js";
+import { HealthController } from "@/system/health/controllers/health.controller.js";
 
 
 export class HealthRoutes {

@@ -1,19 +1,18 @@
-import { OtpType } from "../../generated/prisma/client.js";
-import { ConflictError } from "../errors/conflict.error.js";
-import { InvalidCredentialsError } from "../errors/invalid-credentials.error.js";
-import { NotFoundError } from "../errors/notfound.error.js";
-import { hashCode, checkCode } from "../lib/bcrypt.js";
-import prisma from "../lib/prisma.js";
-import type { AuthRepository } from "../repositories/auth.repository.js";
-import type { OtpRepository } from "../repositories/otp.repository.js";
-import { type SignInInput, type SignUpInput, type SignUpVerifyInput } from "../schemas/auth.schema.js";
-import type { CreateOtpData } from "../types/otp.types.js";
+import { OtpType } from "@/generated/prisma/client.js";
+import { ConflictError } from "@/shared/errors/conflict.error.js";
+import { InvalidCredentialsError } from "@/shared/errors/invalid-credentials.error.js";
+import { NotFoundError } from "@/shared/errors/notfound.error.js";
+import { hashCode, checkCode } from "@/shared/utils/bcrypt.js";
+import prisma from "@/infrastructure/database/prisma.js";
+import type { AuthRepository } from "@/modules/auth/repositories/auth.repository.js";
+import type { OtpRepository } from "@/modules/auth/repositories/otp.repository.js";
+import { type SignInInput, type SignUpInput, type SignUpVerifyInput } from "@/modules/auth/validators/auth.schema.js";
+import type { CreateOtpData } from "@/modules/auth/types/otp.types.js";
 import crypto from "node:crypto"
-import type { JwtService } from "./jwt.service.js";
-import type { JwtAccessTokenPayload } from "../types/jwt.types.js";
-import type { ResendService } from "./resend.service.js";
-import type { ResendEmailBody } from "../types/resend.types.js";
-import { resourceUsage } from "node:process";
+import type { JwtService } from "@/shared/services/jwt.service.js";
+import type { JwtAccessTokenPayload } from "@/shared/types/jwt.types.js";
+import type { ResendService } from "@/shared/services/resend.service.js";
+import type { ResendEmailBody } from "@/shared/types/resend.types.js";
 
 
 export class AuthService {

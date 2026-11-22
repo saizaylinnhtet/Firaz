@@ -1,20 +1,26 @@
 import express, { type Express } from "express";
 import cors from "cors";
-import { HealthRoutes } from "./routes/health.routes.js";
-import { UserRoutes } from "./routes/user.routes.js";
-import { AuthRoutes } from "./routes/auth.routes.js";
+// system imports
+import { HealthRoutes } from "@/system/health/routes/health.routes.js";
 
-import { AuthRepository } from "./repositories/auth.repository.js";
-import { OtpRepository } from "./repositories/otp.repository.js";
-import { AuthService } from "./services/auth.service.js";
+// auth imports
+import { AuthRoutes } from "@/modules/auth/routes/auth.routes.js";
+import { AuthRepository } from "@/modules/auth/repositories/auth.repository.js";
+import { AuthService } from "@/modules/auth/services/auth.service.js";
+import { OtpRepository } from "@/modules/auth/repositories/otp.repository.js";
+
+//user imports
+import { UserRoutes } from "@/modules/user/routes/user.routes.js";
+
+// shared imports
 import {
   errorMiddleware,
   jwtErrorMiddleware,
   zodErrorMiddleware,
-} from "./middlewares/error.middleware.js";
-import { JwtService } from "./services/jwt.service.js";
-import type { CorsOptions } from "./types/corsoptions.types.js";
-import { ResendService } from "./services/resend.service.js";
+} from "@/shared/middlewares/error.middleware.js";
+import { JwtService } from "@/shared/services/jwt.service.js";
+import type { CorsOptions } from "@/shared/types/corsoptions.types.js";
+import { ResendService } from "@/shared/services/resend.service.js";
 
 export class App {
   public readonly app: Express;

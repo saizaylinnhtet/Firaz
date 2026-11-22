@@ -1,5 +1,3 @@
-import type { Otp } from "../../generated/prisma/client.js";
-
 export type CreateUserData = {
     email: string;
     password: string;

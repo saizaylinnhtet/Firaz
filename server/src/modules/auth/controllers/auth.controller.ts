@@ -1,6 +1,6 @@
 import { type Request, type Response } from "express";
-import { signInSchema, signUpSchema, signUpVerifySchema } from "../schemas/auth.schema.js";
-import type { AuthService } from "../services/auth.service.js";
+import { signInSchema, signUpSchema, signUpVerifySchema } from "@/modules/auth/validators/auth.schema.js";
+import type { AuthService } from "@/modules/auth/services/auth.service.js";
 
 
 export class AuthController {

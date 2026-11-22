@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { UserController } from "../controllers/user.controller.js"
+import { UserController } from "@/modules/user/controllers/user.controller.js"
 
 
 export class UserRoutes {

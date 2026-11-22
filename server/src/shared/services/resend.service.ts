@@ -1,5 +1,5 @@
 import { Resend } from 'resend';
-import type { ResendEmailBody } from '../types/resend.types.js';
+import type { ResendEmailBody } from '@/shared/types/resend.types.js';
 
 
 export class ResendService {

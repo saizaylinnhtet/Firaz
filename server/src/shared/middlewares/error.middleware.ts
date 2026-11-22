@@ -1,9 +1,9 @@
 import { type Request, type Response, type NextFunction } from "express";
 import { ZodError } from "zod";
-import { InvalidCredentialsError } from "../errors/invalid-credentials.error.js";
-import { Prisma } from "../../generated/prisma/client.js";
-import { ConflictError } from "../errors/conflict.error.js";
-import { NotFoundError } from "../errors/notfound.error.js";
+import { InvalidCredentialsError } from "@/shared/errors/invalid-credentials.error.js";
+import { Prisma } from "@/generated/prisma/client.js";
+import { ConflictError } from "@/shared/errors/conflict.error.js";
+import { NotFoundError } from "@/shared/errors/notfound.error.js";
 import jwt from "jsonwebtoken";
 
 const { JsonWebTokenError, TokenExpiredError, NotBeforeError } = jwt;
@@ -38,7 +38,7 @@ export const jwtErrorMiddleware = (
 ): void => {
   if (err instanceof JsonWebTokenError) {
     res.status(401).json({
-      message: err.message,
+      message: "Invalid Access Token",
     });
     return;
   }
@@ -49,9 +49,9 @@ export const jwtErrorMiddleware = (
     return;
   }
 
-  if (err instanceof JsonWebTokenError) {
+  if (err instanceof NotBeforeError) {
     res.status(401).json({
-      message: "Invalid access token",
+      message: err.message,
     });
     return;
   }

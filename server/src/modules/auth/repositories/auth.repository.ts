@@ -1,6 +1,6 @@
-import type { TransactionClient } from "../../generated/prisma/internal/prismaNamespace.js";
-import prisma from "../lib/prisma.js";
-import type { CreateUserData, UpdateUserData } from "../types/user.types.js";
+import type { TransactionClient } from "@/generated/prisma/internal/prismaNamespace.js";
+import prisma from "@/infrastructure/database/prisma.js";
+import type { CreateUserData, UpdateUserData } from "@/modules/user/types/user.types.js";
 
 
 export class AuthRepository {
