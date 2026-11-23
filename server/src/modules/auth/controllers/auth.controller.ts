@@ -1,6 +1,7 @@
 import { type Request, type Response } from "express";
 import { signInSchema, signUpSchema, signUpVerifySchema } from "@/modules/auth/validators/auth.schema.js";
 import type { AuthService } from "@/modules/auth/services/auth.service.js";
+import { durationToMs } from "@/shared/utils/duration.js";
 
 
 export class AuthController {
@@ -31,7 +32,7 @@ export class AuthController {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
-            maxAge: 60 * 60 * 1000,
+            maxAge: durationToMs(process.env.JWT_EXPIRES_IN!),
             path: "/",
         });
     }

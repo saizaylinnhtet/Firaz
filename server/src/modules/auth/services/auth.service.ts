@@ -90,19 +90,21 @@ export class AuthService {
         if (existingOtp.otpExpirationTime < new Date()) throw new InvalidCredentialsError("Otp expired")
         const isValidOtp = await checkCode(data.otp, existingOtp.otpCode);
         if (!isValidOtp) throw new InvalidCredentialsError("Invalid OTP")
-        await prisma.$transaction(async (tx) => {
-            await this.authRepository.updateUser(data.userId, {
+        const result = await prisma.$transaction(async (tx) => {
+            const user = await this.authRepository.updateUser(data.userId, {
                 isVerified: true,
                 emailVerifiedAt: new Date()
             }, tx)
             await this.otpRepository.deleteOtp(existingOtp.id, tx)
+            return user
         })
+        const { password, ...userWithoutPassword } = result;
         const payload: JwtAccessTokenPayload = {
             userId: data.userId,
             isVerified: true,
         }
         const accessToken = this.jwtService.signAccessToken(payload)
-        return { message: "success", accessToken }
+        return { message: "success", userWithoutPassword, accessToken }
     }
 
     async resendSignUpOtp(data: { email: string }) {

@@ -5,7 +5,10 @@ import { isJwtAccessTokenPayload } from "@/shared/utils/jwt.js";
 
 export const createAuthMiddleware = (jwtService: JwtService) => {
     return (req: Request, res: Response, next: NextFunction) => {
-        const token = req.cookies.accessToken
+        const authHeader = req.headers.authorization || '';
+        const [scheme, tokenFromHeader] = authHeader.split(' ');
+        const tokenFromCookie = req.cookies?.access_token;
+        const token = scheme === 'Bearer' && tokenFromHeader ? tokenFromHeader : tokenFromCookie;
         if (!token) {
             throw new UnauthorizedError("Authentication required");
         }
