@@ -1,31 +1,90 @@
 import type { TransactionClient } from "@/generated/prisma/internal/prismaNamespace.js";
 import prisma from "@/infrastructure/database/prisma.js";
-import type { CreateUserData, UpdateUserData } from "@/modules/user/types/user.types.js";
-
+import type { CreateSessionData } from "@/modules/auth/types/session.types.js";
 
 export class AuthRepository {
-  async createUser(data: CreateUserData, tx?: TransactionClient) {
+  async createSession(data: CreateSessionData, tx?: TransactionClient) {
     const db = tx ?? prisma;
-    return db.user.create({
+    return db.session.create({
       data,
     });
   }
 
-  async findByEmail(email: string) {
-    return prisma.user.findUnique({
+  findActiveSession(sessionId: string, userId: number) {
+    return prisma.session.findFirst({
       where: {
-        email,
+        id: sessionId,
+        userId,
+        revokedAt: null,
+        expiresAt: {
+          gt: new Date(),
+        },
+      },
+      select: {
+        id: true,
       },
     });
   }
 
-  async updateUser(userId: number, data: UpdateUserData, tx?: TransactionClient) {
+  async findSessionByTokenHash(tokenHash: string, tx?: TransactionClient) {
     const db = tx ?? prisma;
-    return db.user.update({
+    return db.session.findUnique({
       where: {
-        id: userId,
+        tokenHash,
       },
-      data,
+    });
+  }
+
+  async revokeSession(sessionId: string, tx?: TransactionClient) {
+    const db = tx ?? prisma;
+    return db.session.updateMany({
+      where: {
+        id: sessionId,
+        revokedAt: null,
+      },
+      data: {
+        revokedAt: new Date(),
+      },
+    });
+  }
+
+  async revokeAllUserSessions(userId: number, tx?: TransactionClient) {
+    const db = tx ?? prisma;
+    return db.session.updateMany({
+      where: {
+        userId,
+        revokedAt: null,
+      },
+      data: {
+        revokedAt: new Date(),
+      },
+    });
+  }
+
+  async rotateSessionToken(
+    data: {
+      sessionId: string;
+      currentTokenHash: string;
+      newTokenHash: string;
+      expiresAt: Date;
+    },
+    tx?: TransactionClient,
+  ) {
+    const db = tx ?? prisma;
+
+    return db.session.updateMany({
+      where: {
+        id: data.sessionId,
+        tokenHash: data.currentTokenHash,
+        revokedAt: null,
+        expiresAt: {
+          gt: new Date(),
+        },
+      },
+      data: {
+        tokenHash: data.newTokenHash,
+        expiresAt: data.expiresAt,
+      },
     });
   }
 }

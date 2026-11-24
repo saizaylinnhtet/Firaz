@@ -14,8 +14,4 @@ export class HealthRoutes {
     private setupRoutes(): void {
         this.router.get("/", this.controller.health)
     }
-
-    getRouter(): Router {
-        return this.router
-    }
 }

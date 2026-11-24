@@ -5,6 +5,7 @@ import { Prisma } from "@/generated/prisma/client.js";
 import { ConflictError } from "@/shared/errors/conflict.error.js";
 import { NotFoundError } from "@/shared/errors/notfound.error.js";
 import jwt from "jsonwebtoken";
+import { UnauthorizedError } from "../errors/unauthorized.error.js";
 
 const { JsonWebTokenError, TokenExpiredError, NotBeforeError } = jwt;
 
@@ -80,6 +81,12 @@ export const errorMiddleware = (
   }
   if (err instanceof NotFoundError) {
     res.status(404).json({
+      message: err.message,
+    });
+    return;
+  }
+  if (err instanceof UnauthorizedError) {
+    res.status(401).json({
       message: err.message,
     });
     return;
