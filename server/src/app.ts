@@ -10,9 +10,11 @@ import { AuthRoutes } from "@/modules/auth/routes/auth.routes.js";
 import { AuthRepository } from "@/modules/auth/repositories/auth.repository.js";
 import { AuthService } from "@/modules/auth/services/auth.service.js";
 import { OtpRepository } from "@/modules/auth/repositories/otp.repository.js";
+import { RefreshTokenService } from "@/modules/auth/services/refresh-token.service.js";
 
 //user imports
 import { UserRoutes } from "@/modules/user/routes/user.routes.js";
+import { UserRepository } from "@/modules/user/repositories/user.repository.js";
 
 // shared imports
 import {
@@ -30,10 +32,15 @@ export class App {
   public readonly app: Express;
   private readonly middlewares: Middlewares
   private static readonly API_VERSION = "/api/v1";
+  // repositories
+  private authRepository!: AuthRepository;
+  private userRepository!: UserRepository;
+  private otpRepository!: OtpRepository;
   // services
   private authService!: AuthService;
   private jwtService!: JwtService
   private resendService!: ResendService
+  private refreshTokenService!: RefreshTokenService
   // routes
   private healthRoutes!: HealthRoutes;
   private authRoutes!: AuthRoutes;
@@ -41,6 +48,7 @@ export class App {
 
   constructor() {
     this.app = express();
+    this.initializeRepositories();
     this.initializeServices();
     this.middlewares = this.createMiddlewares()
     this.setupGlobalMiddlewares();
@@ -57,7 +65,7 @@ export class App {
   }
 
   private createMiddlewares() {
-    const authMiddleware = createAuthMiddleware(this.jwtService)
+    const authMiddleware = createAuthMiddleware(this.jwtService, this.authRepository)
     return {
       authMiddleware
     }
@@ -69,16 +77,30 @@ export class App {
     this.app.use(cookieParser())
   }
 
+  private initializeRepositories(): void {
+    this.authRepository = new AuthRepository()
+    this.userRepository = new UserRepository(),
+    this.otpRepository = new OtpRepository()
+  }
+
   private initializeServices(): void {
     this.jwtService = new JwtService()
     this.resendService = new ResendService()
-    this.authService = new AuthService(this.jwtService, this.resendService, new AuthRepository(), new OtpRepository());
+    this.refreshTokenService = new RefreshTokenService()
+    this.authService = new AuthService(
+      this.jwtService,
+      this.refreshTokenService,
+      this.resendService, 
+      this.authRepository,
+      this.userRepository,
+      this.otpRepository
+    );
   }
 
   private initializeRoutes() : void {
     this.healthRoutes = new HealthRoutes();
     this.userRoutes = new UserRoutes();
-    this.authRoutes = new AuthRoutes(this.authService);
+    this.authRoutes = new AuthRoutes(this.authService, this.middlewares.authMiddleware);
   }
 
   private setupRoutes(): void {
